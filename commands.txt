@@ -1,0 +1,1 @@
+ffmpeg -i BigBuckBunny_320x180.mp4 -r 1 images/%03d.png
