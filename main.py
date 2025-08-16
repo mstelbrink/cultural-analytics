@@ -27,19 +27,20 @@ ids = []
 for i in range(0, len(filtered_df.index)):
     ids.append(filtered_df.iloc[i]['track_id'])
 
-years = {}
+dates = {}
 
 chunked_ids = list(chunks(ids, 50))
 
 for i in range(0, len(chunked_ids)):
     results = sp.tracks(chunked_ids[i])
     for j in range(0, len(chunked_ids[i])):
-        years[results['tracks'][j]['id']] = results['tracks'][j]['album']['release_date']
+        dates[results['tracks'][j]['id']] = results['tracks'][j]['album']['release_date']
 
-filtered_df['release_date'] = filtered_df['track_id'].map(years)
+filtered_df['release_date'] = filtered_df['track_id'].map(dates)
+filtered_df['release_date'] = pd.to_datetime(filtered_df['release_date'], errors='coerce')
+filtered_df.set_index('release_date', inplace=True)
 
-sorted_and_filtered_df = filtered_df.sort_values(by="release_date")
+yearly_audio_features = filtered_df[['danceability', 'valence', 'tempo']].resample('YE').mean()
 
-plt.scatter(sorted_and_filtered_df['release_date'], sorted_and_filtered_df['danceability'])
-
+plt.scatter(yearly_audio_features.index, yearly_audio_features['danceability'])
 plt.show()
