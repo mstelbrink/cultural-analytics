@@ -38,6 +38,7 @@ for i in range(0, len(chunked_ids)):
 
 filtered_df['release_date'] = filtered_df['track_id'].map(dates)
 filtered_df['release_date'] = pd.to_datetime(filtered_df['release_date'], errors='coerce')
+filtered_df.dropna(subset='release_date', inplace=True)
 filtered_df.set_index('release_date', inplace=True)
 
 yearly_audio_features = filtered_df[['danceability', 'valence', 'tempo']].resample('YE').mean()
