@@ -10,6 +10,7 @@ fsspec==2025.7.0
 hf-xet==1.1.5
 huggingface-hub==0.34.3
 idna==3.10
+joblib==1.5.1
 kiwisolver==1.4.8
 matplotlib==3.10.5
 numpy==2.3.2
@@ -26,8 +27,11 @@ pytz==2025.2
 PyYAML==6.0.2
 redis==6.3.0
 requests==2.32.4
+scikit-learn==1.7.1
+scipy==1.16.1
 six==1.17.0
 spotipy==2.25.1
+threadpoolctl==3.6.0
 tqdm==4.67.1
 typing_extensions==4.14.1
 tzdata==2025.2
