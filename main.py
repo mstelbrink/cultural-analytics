@@ -41,7 +41,24 @@ filtered_df['release_date'] = pd.to_datetime(filtered_df['release_date'], errors
 filtered_df.dropna(subset='release_date', inplace=True)
 filtered_df.set_index('release_date', inplace=True)
 
-yearly_audio_features = filtered_df[['danceability', 'valence', 'tempo']].resample('YE').mean()
+features_to_plot = ['acousticness',
+                    'danceability',
+                    'energy',
+                    'instrumentalness',
+                    'key',
+                    'liveness',
+                    'loudness',
+                    'mode',
+                    'speechiness',
+                    'tempo',
+                    'valence']
 
-plt.scatter(yearly_audio_features.index, yearly_audio_features['danceability'])
+yearly_audio_features = filtered_df[features_to_plot].resample('YE').mean()
+yearly_audio_features.dropna(inplace=True)
+
+fig, axs = plt.subplots(len(features_to_plot))
+
+for i in range(0, len(features_to_plot)):
+     axs[i].plot(yearly_audio_features.index.year, yearly_audio_features[features_to_plot[i]])
+
 plt.show()

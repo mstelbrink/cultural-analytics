@@ -67,7 +67,6 @@ reduced_df['decade'] = df['decade']
 plt.figure(figsize=(12, 8))
 scatter = plt.scatter(reduced_df['PC1'], reduced_df['PC2'], c=reduced_df['cluster'], cmap='viridis', alpha=0.6)
 
-# Annotate points with decade information
 for i in range(reduced_df.shape[0]):
     plt.annotate(reduced_df['decade'].iloc[i], (reduced_df['PC1'].iloc[i], reduced_df['PC2'].iloc[i]), fontsize=8, alpha=0.7)
 
