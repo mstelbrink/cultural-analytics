@@ -3,9 +3,11 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from dotenv import load_dotenv
 import os
 import pandas as pd
+import numpy as np
 from matplotlib import pyplot as plt
 from utils import chunks
 import math
+import statsmodels.api as sm
 
 load_dotenv()
 
@@ -22,10 +24,14 @@ startYear = 1970
 endYear = 2020
 rows = 3
 columns = 4
+include_subgenres = True
 
 df = pd.read_csv("hf://datasets/maharshipandya/spotify-tracks-dataset/dataset.csv")
 
-df = df[df['track_genre'].str.contains('pop')]
+if include_subgenres:
+    df = df[df['track_genre'].str.contains('pop')]
+else:
+    df = df[df['track_genre'] == 'pop']
 
 ids = df['track_id']
 chunked_ids = list(chunks(ids, 50))
@@ -46,6 +52,7 @@ df['market_US'] = df['track_id'].map(published_in_US)
 
 df['release_date'] = pd.to_datetime(df['release_date'], errors='coerce')
 df.dropna(subset='release_date', inplace=True)
+df['numeric_release_date'] = df['release_date'].map(pd.Timestamp.toordinal)
 
 df = df[df['release_date'].dt.year >= startYear]
 df = df[df['release_date'].dt.year < endYear]
@@ -63,16 +70,22 @@ features_to_plot = ['acousticness',
                     'tempo',
                     'valence']
 
-yearly_audio_features = df[features_to_plot].resample('YE').mean()
-yearly_audio_features.dropna(inplace=True)
-
 fig, axs = plt.subplots(rows, columns)
 fig.subplots_adjust(hspace=0.33)
 
 for i in range(0, len(features_to_plot)):
+    a = df['numeric_release_date']
+    b = df[features_to_plot[i]]
+    a = sm.add_constant(a)
+
+    model = sm.OLS(b, a).fit()
+    predictions = model.predict(a)
+
     x = math.floor(i / columns)
     y = i % columns
-    axs[x, y].plot(yearly_audio_features.index.year, yearly_audio_features[features_to_plot[i]])
+
+    axs[x, y].scatter(df.index, df[features_to_plot[i]])
+    axs[x, y].plot(df.index, predictions, color='red')
     axs[x, y].set_title(features_to_plot[i])
     axs[x, y].grid()
 
