@@ -43,9 +43,9 @@ scatter = plt.scatter(reduced_df['PC1'], reduced_df['PC2'], c=reduced_df['cluste
 # for i in range(reduced_df.shape[0]):
 #     plt.annotate(reduced_df['decade'].iloc[i], (reduced_df['PC1'].iloc[i], reduced_df['PC2'].iloc[i]), fontsize=8, alpha=0.7)
 
-plt.xlabel('Principal Component 1')
-plt.ylabel('Principal Component 2')
-plt.title('K-means Clustering of Songs with Decade Annotations (PCA Reduced)')
+plt.xlabel('Hauptkomponente 1')
+plt.ylabel('Hauptkomponente 2')
+plt.title('K-Means Cluster')
 plt.colorbar(scatter, label='Cluster')
 plt.grid(True)
 plt.show()
