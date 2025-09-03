@@ -1,7 +1,7 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 from utils.preprocessor import preprocess
-from utils.constants import URL
+from utils.constants import FEATURES, URL
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
@@ -20,7 +20,7 @@ df['decade'] = (df['year'] // 10) * 10
 
 df.reset_index(drop=True, inplace=True)
 
-features = df[['danceability', 'energy', 'loudness', 'tempo', 'valence']]
+features = df[FEATURES]
 
 scaler = StandardScaler()
 scaled_features = scaler.fit_transform(features)
@@ -31,10 +31,9 @@ for k in range(1, 11):
     kmeans.fit(scaled_features)
     inertia.append(kmeans.inertia_)
 
-# Plot the elbow method to decide on the best 'K'
+# Plot the elbow method to decide on the best number of clusters
 plt.figure(figsize=(8, 5))
 plt.plot(range(1, 11), inertia, marker='o')
-plt.title('Elbow Method')
-plt.xlabel('Number of clusters')
-plt.ylabel('Inertia')
+plt.xlabel('Anzahl der Cluster')
+plt.ylabel('Trägheit')
 plt.show()

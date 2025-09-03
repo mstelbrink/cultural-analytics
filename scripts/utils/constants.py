@@ -1,5 +1,5 @@
 URL = "hf://datasets/maharshipandya/spotify-tracks-dataset/dataset.csv"
-FEATURES_TO_PLOT = ['acousticness',
+FEATURES = ['acousticness',
                     'danceability',
                     'energy',
                     'instrumentalness',

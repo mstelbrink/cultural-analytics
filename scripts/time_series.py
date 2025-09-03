@@ -5,7 +5,7 @@ import os
 import pandas as pd
 from matplotlib import pyplot as plt
 from utils.preprocessor import preprocess
-from utils.constants import URL, FEATURES_TO_PLOT
+from utils.constants import URL, FEATURES
 import math
 import statsmodels.api as sm
 
@@ -22,14 +22,19 @@ data = pd.read_csv(URL)
 
 df = preprocess(data)
 
-yearly_audio_features = df[FEATURES_TO_PLOT].resample('YE').mean()
+# Print variance for each feature
+for x in range(0, len(FEATURES)):
+    print(FEATURES[x] + ": " + str(df[FEATURES[x]].var(ddof=0)))
+
+# Create seasonal component
+yearly_audio_features = df[FEATURES].resample('YE').mean()
 
 fig, axs = plt.subplots(rows, columns)
 fig.subplots_adjust(hspace=0.33)
 
-for i in range(0, len(FEATURES_TO_PLOT)):
+for i in range(0, len(FEATURES)):
     a = df['numeric_release_date']
-    b = df[FEATURES_TO_PLOT[i]]
+    b = df[FEATURES[i]]
     a = sm.add_constant(a)
 
     model = sm.OLS(b, a).fit()
@@ -38,10 +43,11 @@ for i in range(0, len(FEATURES_TO_PLOT)):
     x = math.floor(i / columns)
     y = i % columns
 
-    axs[x, y].scatter(df.index, df[FEATURES_TO_PLOT[i]], alpha=0.1)
-    axs[x, y].plot(df.index, predictions, color='yellow')
-    axs[x, y].plot(yearly_audio_features.index, yearly_audio_features[FEATURES_TO_PLOT[i]], color='red', alpha=0.8)
-    axs[x, y].set_title(FEATURES_TO_PLOT[i])
+    axs[x, y].scatter(df.index, df[FEATURES[i]], alpha=0.1)
+    axs[x, y].boxplot(df[FEATURES[i]])
+    axs[x, y].plot(df.index, predictions, color='purple')
+    axs[x, y].plot(yearly_audio_features.index, yearly_audio_features[FEATURES[i]], color='red', alpha=0.8)
+    axs[x, y].set_title(FEATURES[i])
     axs[x, y].grid()
 
 plt.show()
